@@ -92,19 +92,11 @@ function CazywebSignIn() {
   };
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-zinc-950 text-white">
-      <div className="w-full max-w-sm space-y-6 p-6">
+    <div className="flex min-h-screen items-center justify-center bg-white text-zinc-900 p-6">
+      <div className="w-full max-w-sm space-y-6">
         <div className="text-center">
-          <img
-            src="/plane-logo.svg"
-            alt="cazyweb"
-            className="h-10 mx-auto"
-            onError={(e) => {
-              (e.target as HTMLImageElement).style.display = "none";
-            }}
-          />
-          <h1 className="mt-4 text-xl font-bold">cazyweb PM</h1>
-          <p className="mt-2 text-sm text-zinc-400">
+          <h1 className="text-2xl font-bold text-zinc-900">cazyweb PM</h1>
+          <p className="mt-2 text-sm text-zinc-600">
             Sign in with your cazyweb account
           </p>
         </div>
@@ -118,20 +110,20 @@ function CazywebSignIn() {
               placeholder="you@yourcompany.com"
               required
               autoFocus
-              className="w-full bg-zinc-900 border border-zinc-800 rounded-lg px-3 py-2 text-sm text-white focus:border-blue-500 focus:outline-none"
+              className="w-full bg-white border border-zinc-300 rounded-lg px-3 py-2.5 text-sm text-zinc-900 placeholder-zinc-400 focus:border-blue-600 focus:outline-none focus:ring-1 focus:ring-blue-600"
             />
             <button
               type="submit"
               disabled={loading || !email}
-              className="w-full px-4 py-2 bg-white text-black rounded-lg font-semibold disabled:opacity-60"
+              className="w-full px-4 py-2.5 bg-blue-600 text-white rounded-lg font-semibold hover:bg-blue-700 disabled:opacity-60 disabled:cursor-not-allowed transition-colors"
             >
               {loading ? "Sending…" : "Send code"}
             </button>
           </form>
         ) : (
           <form onSubmit={verifyAndSso} className="space-y-3">
-            <p className="text-xs text-zinc-400">
-              Code sent to <span className="text-white">{email}</span>
+            <p className="text-xs text-zinc-600">
+              Code sent to <span className="font-semibold text-zinc-900">{email}</span>
             </p>
             <input
               type="text"
@@ -141,12 +133,12 @@ function CazywebSignIn() {
               required
               autoFocus
               inputMode="numeric"
-              className="w-full bg-zinc-900 border border-zinc-800 rounded-lg px-3 py-2 text-sm text-white tracking-widest text-center focus:border-blue-500 focus:outline-none"
+              className="w-full bg-white border border-zinc-300 rounded-lg px-3 py-2.5 text-sm text-zinc-900 placeholder-zinc-400 tracking-widest text-center focus:border-blue-600 focus:outline-none focus:ring-1 focus:ring-blue-600"
             />
             <button
               type="submit"
               disabled={loading || !otp}
-              className="w-full px-4 py-2 bg-white text-black rounded-lg font-semibold disabled:opacity-60"
+              className="w-full px-4 py-2.5 bg-blue-600 text-white rounded-lg font-semibold hover:bg-blue-700 disabled:opacity-60 disabled:cursor-not-allowed transition-colors"
             >
               {loading ? "Signing in…" : "Sign in"}
             </button>
@@ -157,7 +149,7 @@ function CazywebSignIn() {
                 setOtp("");
                 setError(null);
               }}
-              className="w-full text-xs text-zinc-400 hover:text-white"
+              className="w-full text-xs text-zinc-600 hover:text-zinc-900"
             >
               Use a different email
             </button>
@@ -165,11 +157,11 @@ function CazywebSignIn() {
         )}
 
         {error && (
-          <p className="text-xs text-red-400 text-center">{error}</p>
+          <p className="text-xs text-red-600 text-center">{error}</p>
         )}
 
         <p className="text-center text-xs text-zinc-500">
-          <a href="/?fallback=1" className="hover:text-zinc-300">
+          <a href="/?fallback=1" className="hover:text-zinc-700">
             Sign in with magic link instead
           </a>
         </p>
