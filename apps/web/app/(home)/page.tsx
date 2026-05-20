@@ -177,7 +177,13 @@ function HomePage() {
     new URLSearchParams(window.location.search).get("fallback") === "1";
 
   if (!showFallback) {
-    return <CazywebSignIn />;
+    return (
+      <DefaultLayout>
+        <AuthenticationWrapper pageType={EPageTypes.NON_AUTHENTICATED}>
+          <CazywebSignIn />
+        </AuthenticationWrapper>
+      </DefaultLayout>
+    );
   }
 
   return (
