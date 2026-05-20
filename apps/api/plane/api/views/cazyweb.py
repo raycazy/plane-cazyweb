@@ -382,3 +382,61 @@ class CazywebMagicSignInAPIEndpoint(APIView):
         django_login(request, user)
         request.session.save()
         return Response({"signed_in": True, "redirect": "/"}, status=status.HTTP_200_OK)
+
+
+class CazywebUserFindOrCreateAPIEndpoint(BaseAPIView):
+    """
+    POST /api/v1/users/find-or-create/
+
+    Look up a Plane user by email. If not found, create one (active, email-verified,
+    with a random unguessable password since this user will sign in via admin-minted
+    magic-link only). Returns the user's UUID + email.
+
+    Body: { "email": "...", "first_name": "..." (optional) }
+    Returns: { "id": "<uuid>", "email": "...", "created": true|false }
+    """
+
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request):
+        email = (request.data.get("email") or "").strip().lower()
+        first_name = (request.data.get("first_name") or "").strip()
+
+        if not email:
+            return Response({"error": "email is required"}, status=status.HTTP_400_BAD_REQUEST)
+        try:
+            validate_email(email)
+        except ValidationError:
+            return Response({"error": "invalid email"}, status=status.HTTP_400_BAD_REQUEST)
+
+        existing = User.objects.filter(email=email).first()
+        if existing:
+            return Response(
+                {"id": str(existing.id), "email": existing.email, "created": False},
+                status=status.HTTP_200_OK,
+            )
+
+        random_pw = secrets.token_urlsafe(32)
+        try:
+            user = User.objects.create_user(email=email, username=email, password=random_pw)
+        except IntegrityError:
+            # Race: another request just created it. Re-fetch.
+            existing = User.objects.filter(email=email).first()
+            if existing:
+                return Response(
+                    {"id": str(existing.id), "email": existing.email, "created": False},
+                    status=status.HTTP_200_OK,
+                )
+            return Response({"error": "could not create user"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+        if first_name:
+            user.first_name = first_name
+        user.is_active = True
+        user.is_email_verified = True
+        user.save()
+        Profile.objects.get_or_create(user=user)
+
+        return Response(
+            {"id": str(user.id), "email": user.email, "created": True},
+            status=status.HTTP_201_CREATED,
+        )

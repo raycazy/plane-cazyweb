@@ -12,9 +12,15 @@ from plane.api.views.cazyweb import (
     CazywebWorkspaceMemberAPIEndpoint,
     CazywebMagicGenerateAPIEndpoint,
     CazywebMagicSignInAPIEndpoint,
+    CazywebUserFindOrCreateAPIEndpoint,
 )
 
 urlpatterns = [
+    path(
+        "users/find-or-create/",
+        CazywebUserFindOrCreateAPIEndpoint.as_view(http_method_names=["post"]),
+        name="cazyweb-user-find-or-create",
+    ),
     path(
         "workspaces/",
         CazywebWorkspaceCreateAPIEndpoint.as_view(http_method_names=["post"]),
